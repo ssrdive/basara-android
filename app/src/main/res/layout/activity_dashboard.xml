@@ -30,6 +30,28 @@
 
     </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <EditText
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Item ID"
+            android:layout_gravity="left"
+            android:id="@+id/itemIDET" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Search"
+            android:layout_gravity="right"
+            android:id="@+id/searchBtn" />
+
+    </LinearLayout>
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -314,7 +336,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingTop="20dp"
-                android:text="Copyright © 2020 FarmGear (Private) Limited"
+                android:text="Copyright © 2022 FarmGear (Private) Limited"
                 android:layout_gravity="center"/>
 
         </LinearLayout>

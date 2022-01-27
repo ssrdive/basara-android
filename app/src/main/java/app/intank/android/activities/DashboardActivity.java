@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -35,8 +36,11 @@ import app.intank.android.utils.Utils;
 
 public class DashboardActivity extends AppCompatActivity implements View.OnClickListener {
 
+    EditText itemIDET;
+
     Button scanItemBtn;
     Button signOutBtn;
+    Button searchBtn;
 
     TextView itemID;
     TextView modelID;
@@ -64,8 +68,11 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
         userDetails = getApplication().getSharedPreferences("user_details", getApplicationContext().MODE_PRIVATE);
         utils = new Utils();
 
+        itemIDET = findViewById(R.id.itemIDET);
+
         scanItemBtn = findViewById(R.id.scanItemBtn);
         signOutBtn = findViewById(R.id.signOutBtn);
+        searchBtn = findViewById(R.id.searchBtn);
 
         itemID = findViewById(R.id.itemID);
         modelID = findViewById(R.id.modelID);
@@ -80,6 +87,7 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
 
         scanItemBtn.setOnClickListener(this);
         signOutBtn.setOnClickListener(this);
+        searchBtn.setOnClickListener(this);
     }
 
     @Override
@@ -90,6 +98,9 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
                 break;
             case R.id.signOutBtn:
                 signOut();
+                break;
+            case R.id.searchBtn:
+                updateItemDetails(itemIDET.getText().toString());
                 break;
         }
     }
@@ -141,7 +152,7 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
                 public void onErrorResponse(VolleyError error) {
                     loadItemDetailsDialog.dismiss();
                     error.printStackTrace();
-                    signOut();
+                    Toast.makeText(getApplicationContext(), "Invalid Item ID", Toast.LENGTH_LONG).show();
                 }
             }) {
                 @Override
