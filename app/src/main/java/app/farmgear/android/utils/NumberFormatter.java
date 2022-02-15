@@ -1,4 +1,4 @@
-package app.intank.android.utils;
+package app.farmgear.android.utils;
 
 import java.text.DecimalFormat;
 

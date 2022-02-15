@@ -1,4 +1,4 @@
-package app.intank.android.activities;
+package app.farmgear.android.activities;
 
 import com.journeyapps.barcodescanner.CaptureActivity;
 

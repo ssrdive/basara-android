@@ -1,4 +1,4 @@
-package app.intank.android.utils;
+package app.farmgear.android.utils;
 
 import android.content.Context;
 import android.net.ConnectivityManager;

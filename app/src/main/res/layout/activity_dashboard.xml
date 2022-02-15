@@ -12,7 +12,58 @@
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Administrative"
+            android:textSize="16dp" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Sign Out"
+            android:layout_gravity="left"
+            android:id="@+id/signOutBtn" />
+
+    </LinearLayout>
+
+    <View
+        style="@style/ViewSeparator" />
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Transactions"
+            android:textSize="16dp" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Pending Transfers"
+            android:id="@+id/pendingTransfersBtn" />
+
+    </LinearLayout>
+
+    <View
+        style="@style/ViewSeparator" />
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Item Details"
+            android:textSize="16dp" />
 
         <Button
             android:layout_width="wrap_content"
@@ -20,13 +71,6 @@
             android:text="Scan Item"
             android:layout_gravity="left"
             android:id="@+id/scanItemBtn" />
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Sign Out"
-            android:layout_gravity="right"
-            android:id="@+id/signOutBtn" />
 
     </LinearLayout>
 

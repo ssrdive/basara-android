@@ -1,4 +1,4 @@
-package app.intank.android.activities;
+package app.farmgear.android.activities;
 
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
@@ -30,9 +30,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import app.intank.android.R;
-import app.intank.android.utils.Utils;
-import app.intank.android.api.API;
+import app.farmgear.android.R;
+import app.farmgear.android.utils.Utils;
+import app.farmgear.android.api.API;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     private SharedPreferences userDetails;

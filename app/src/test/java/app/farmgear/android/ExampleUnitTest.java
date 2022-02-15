@@ -1,4 +1,4 @@
-package app.intank.android;
+package app.farmgear.android;
 
 import org.junit.Test;
 

@@ -1,4 +1,4 @@
-package app.intank.android.activities;
+package app.farmgear.android.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -29,10 +29,10 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
-import app.intank.android.R;
-import app.intank.android.api.API;
-import app.intank.android.utils.NumberFormatter;
-import app.intank.android.utils.Utils;
+import app.farmgear.android.R;
+import app.farmgear.android.api.API;
+import app.farmgear.android.utils.NumberFormatter;
+import app.farmgear.android.utils.Utils;
 
 public class DashboardActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -41,6 +41,7 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
     Button scanItemBtn;
     Button signOutBtn;
     Button searchBtn;
+    Button pendingTransfersBtn;
 
     TextView itemID;
     TextView modelID;
@@ -73,6 +74,7 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
         scanItemBtn = findViewById(R.id.scanItemBtn);
         signOutBtn = findViewById(R.id.signOutBtn);
         searchBtn = findViewById(R.id.searchBtn);
+        pendingTransfersBtn = findViewById(R.id.pendingTransfersBtn);
 
         itemID = findViewById(R.id.itemID);
         modelID = findViewById(R.id.modelID);
@@ -88,6 +90,7 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
         scanItemBtn.setOnClickListener(this);
         signOutBtn.setOnClickListener(this);
         searchBtn.setOnClickListener(this);
+        pendingTransfersBtn.setOnClickListener(this);
     }
 
     @Override
@@ -101,6 +104,10 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
                 break;
             case R.id.searchBtn:
                 updateItemDetails(itemIDET.getText().toString());
+                break;
+            case R.id.pendingTransfersBtn:
+                Intent intent = new Intent(getApplicationContext(), PendingTransfersActivity.class);
+                startActivity(intent);
                 break;
         }
     }
