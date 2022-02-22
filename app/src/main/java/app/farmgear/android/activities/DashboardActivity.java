@@ -42,6 +42,7 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
     Button signOutBtn;
     Button searchBtn;
     Button pendingTransfersBtn;
+    Button invoiceBtn;
 
     TextView itemID;
     TextView modelID;
@@ -53,6 +54,9 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
     TextView foreignID;
     TextView itemName;
     TextView price;
+    TextView userFullName;
+    TextView warehouseName;
+    TextView accessType;
 
     private RequestQueue mQueue;
     private SharedPreferences userDetails;
@@ -75,6 +79,7 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
         signOutBtn = findViewById(R.id.signOutBtn);
         searchBtn = findViewById(R.id.searchBtn);
         pendingTransfersBtn = findViewById(R.id.pendingTransfersBtn);
+        invoiceBtn = findViewById(R.id.invoiceBtn);
 
         itemID = findViewById(R.id.itemID);
         modelID = findViewById(R.id.modelID);
@@ -86,11 +91,23 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
         foreignID = findViewById(R.id.foreignID);
         itemName = findViewById(R.id.itemName);
         price = findViewById(R.id.price);
+        userFullName = findViewById(R.id.userFullName);
+        warehouseName = findViewById(R.id.warehouseName);
+        accessType = findViewById(R.id.accessType);
 
         scanItemBtn.setOnClickListener(this);
         signOutBtn.setOnClickListener(this);
         searchBtn.setOnClickListener(this);
         pendingTransfersBtn.setOnClickListener(this);
+        invoiceBtn.setOnClickListener(this);
+
+        setUserInfo();
+    }
+
+    private void setUserInfo() {
+        userFullName.setText(userDetails.getString("name", ""));
+        warehouseName.setText(userDetails.getString("warehouse_name", ""));
+        accessType.setText(userDetails.getString("role", ""));
     }
 
     @Override
@@ -103,12 +120,13 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
                 signOut();
                 break;
             case R.id.searchBtn:
-                updateItemDetails(itemIDET.getText().toString());
+                updateItemDetails(itemIDET.getText().toString().toUpperCase());
                 break;
             case R.id.pendingTransfersBtn:
-                Intent intent = new Intent(getApplicationContext(), PendingTransfersActivity.class);
-                startActivity(intent);
+                startActivity(new Intent(getApplicationContext(), PendingTransfersActivity.class));
                 break;
+            case R.id.invoiceBtn:
+                startActivity(new Intent(getApplicationContext(), InvoiceActivity.class));
         }
     }
 
@@ -147,7 +165,7 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
                         pageNo.setText(itemObj.getString("page_no"));
                         itemNo.setText(itemObj.getString("item_no"));
                         foreignID.setText(itemObj.getString("foreign_id"));
-                        itemName.setText(itemObj.getString("item_name"));
+                        itemName.setText(itemObj.getString("name"));
                         price.setText("Rs " + formatter.format(itemObj.getString("price")));
 
                     } catch (JSONException e) {

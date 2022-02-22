@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:text="Pending Transfer Details"
         android:textAlignment="center"
-        android:textSize="16dp" />
+        android:textSize="18dp" />
 
     <ScrollView
         android:layout_width="match_parent"

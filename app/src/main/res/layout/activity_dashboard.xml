@@ -4,97 +4,112 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingTop="10dp"
     android:layout_margin="10dp"
     android:orientation="vertical"
     tools:context=".activities.DashboardActivity">
 
-    <LinearLayout
-        android:layout_width="fill_parent"
+    <TextView
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Administrative"
-            android:textSize="16dp" />
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Sign Out"
-            android:layout_gravity="left"
-            android:id="@+id/signOutBtn" />
-
-    </LinearLayout>
-
-    <View
-        style="@style/ViewSeparator" />
-
-    <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Transactions"
-            android:textSize="16dp" />
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Pending Transfers"
-            android:id="@+id/pendingTransfersBtn" />
-
-    </LinearLayout>
-
-    <View
-        style="@style/ViewSeparator" />
-
-    <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Item Details"
-            android:textSize="16dp" />
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Scan Item"
-            android:layout_gravity="left"
-            android:id="@+id/scanItemBtn" />
-
-    </LinearLayout>
+        android:paddingBottom="10dp"
+        android:text="Dashboard"
+        android:textAlignment="center"
+        android:textSize="18dp" />
 
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <EditText
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Item ID"
-            android:layout_gravity="left"
-            android:id="@+id/itemIDET" />
-
-        <Button
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Search"
-            android:layout_gravity="right"
-            android:id="@+id/searchBtn" />
+            android:layout_weight="3"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Hello, "
+                    android:textSize="16dp" />
+
+                <TextView
+                    android:id="@+id/userFullName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="John Doe"
+                    android:textSize="16dp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Warehouse: "
+                    android:textSize="16dp" />
+
+                <TextView
+                    android:id="@+id/warehouseName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Warehouse"
+                    android:textSize="16dp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Access: "
+                    android:textSize="16dp" />
+
+                <TextView
+                    android:id="@+id/accessType"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Generic"
+                    android:textSize="16dp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <Button
+                android:id="@+id/signOutBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                android:text="Sign Out" />
+
+        </LinearLayout>
 
     </LinearLayout>
+
+    <View style="@style/ViewSeparator" />
 
     <ScrollView
         android:layout_width="match_parent"
@@ -103,7 +118,6 @@
         <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"
             android:orientation="vertical">
 
             <LinearLayout
@@ -111,277 +125,372 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
-                <TextView
-                    android:layout_width="0dp"
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="left"
                     android:layout_weight="1"
-                    android:text="Item ID"
-                    android:textSize="15sp" />
+                    android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/itemID"
-                    android:layout_width="0dp"
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Sales Commission" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="24dp"
+                        android:text="Rs. 5,230.00" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="right"
                     android:layout_weight="1"
-                    android:text="N/A"
-                    android:textSize="18sp" />
+                    android:orientation="vertical">
+
+                    <Button
+                        android:id="@+id/pendingTransfersBtn"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Pending Transfers" />
+
+                    <Button
+                        android:id="@+id/warehouseStockBtn"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Warehouse Stock" />
+
+                    <Button
+                        android:id="@+id/invoiceBtn"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Invoice" />
+
+                </LinearLayout>
 
             </LinearLayout>
 
-            <View
-                style="@style/ViewSeparator" />
+            <View style="@style/ViewSeparator" />
 
             <LinearLayout
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="vertical">
 
                 <TextView
-                    android:layout_width="0dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Item Details"
+                    android:textSize="16dp" />
+
+                <Button
+                    android:id="@+id/scanItemBtn"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="left"
-                    android:layout_weight="1"
-                    android:text="Model ID"
-                    android:textSize="15sp" />
-
-                <TextView
-                    android:id="@+id/modelID"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="right"
-                    android:layout_weight="1"
-                    android:text="N/A"
-                    android:textSize="15sp" />
+                    android:text="Scan Item" />
 
             </LinearLayout>
 
-            <View
-                style="@style/ViewSeparator" />
-
             <LinearLayout
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
-                <TextView
-                    android:layout_width="0dp"
+                <EditText
+                    android:id="@+id/itemIDET"
+                    android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="left"
                     android:layout_weight="1"
-                    android:text="Model Name"
-                    android:textSize="15sp" />
+                    android:text="Item ID" />
 
-                <TextView
-                    android:id="@+id/modelName"
-                    android:layout_width="0dp"
+                <Button
+                    android:id="@+id/searchBtn"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="right"
-                    android:layout_weight="1"
-                    android:text="N/A"
-                    android:textSize="15sp" />
+                    android:text="Search" />
 
             </LinearLayout>
-
-            <View
-                style="@style/ViewSeparator" />
 
             <LinearLayout
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="vertical"
+                android:padding="10dp">
 
-                <TextView
-                    android:layout_width="0dp"
+                <LinearLayout
+                    android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="left"
-                    android:layout_weight="1"
-                    android:text="Category ID"
-                    android:textSize="15sp" />
+                    android:orientation="horizontal">
 
-                <TextView
-                    android:id="@+id/categoryID"
-                    android:layout_width="0dp"
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="left"
+                        android:layout_weight="1"
+                        android:text="Item ID"
+                        android:textSize="15sp" />
+
+                    <TextView
+                        android:id="@+id/itemID"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="right"
+                        android:layout_weight="1"
+                        android:text="N/A"
+                        android:textSize="18sp" />
+
+                </LinearLayout>
+
+                <View style="@style/ViewSeparator" />
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="right"
-                    android:layout_weight="1"
-                    android:text="N/A"
-                    android:textSize="15sp" />
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="left"
+                        android:layout_weight="1"
+                        android:text="Model ID"
+                        android:textSize="15sp" />
+
+                    <TextView
+                        android:id="@+id/modelID"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="right"
+                        android:layout_weight="1"
+                        android:text="N/A"
+                        android:textSize="15sp" />
+
+                </LinearLayout>
+
+                <View style="@style/ViewSeparator" />
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="left"
+                        android:layout_weight="1"
+                        android:text="Model Name"
+                        android:textSize="15sp" />
+
+                    <TextView
+                        android:id="@+id/modelName"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="right"
+                        android:layout_weight="1"
+                        android:text="N/A"
+                        android:textSize="15sp" />
+
+                </LinearLayout>
+
+                <View style="@style/ViewSeparator" />
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="left"
+                        android:layout_weight="1"
+                        android:text="Category ID"
+                        android:textSize="15sp" />
+
+                    <TextView
+                        android:id="@+id/categoryID"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="right"
+                        android:layout_weight="1"
+                        android:text="N/A"
+                        android:textSize="15sp" />
+
+                </LinearLayout>
+
+                <View style="@style/ViewSeparator" />
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="left"
+                        android:layout_weight="1"
+                        android:text="Category Name"
+                        android:textSize="15sp" />
+
+                    <TextView
+                        android:id="@+id/categoryName"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="right"
+                        android:layout_weight="1"
+                        android:text="N/A"
+                        android:textSize="15sp" />
+
+                </LinearLayout>
+
+                <View style="@style/ViewSeparator" />
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="left"
+                        android:layout_weight="1"
+                        android:text="Page No"
+                        android:textSize="15sp" />
+
+                    <TextView
+                        android:id="@+id/pageNo"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="right"
+                        android:layout_weight="1"
+                        android:text="N/A"
+                        android:textSize="15sp" />
+
+                </LinearLayout>
+
+                <View style="@style/ViewSeparator" />
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="left"
+                        android:layout_weight="1"
+                        android:text="Item No"
+                        android:textSize="15sp" />
+
+                    <TextView
+                        android:id="@+id/itemNo"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="right"
+                        android:layout_weight="1"
+                        android:text="N/A"
+                        android:textSize="15sp" />
+
+                </LinearLayout>
+
+                <View style="@style/ViewSeparator" />
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="left"
+                        android:layout_weight="1"
+                        android:text="Foreign ID"
+                        android:textSize="15sp" />
+
+                    <TextView
+                        android:id="@+id/foreignID"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="right"
+                        android:layout_weight="1"
+                        android:text="N/A"
+                        android:textSize="15sp" />
+
+                </LinearLayout>
+
+                <View style="@style/ViewSeparator" />
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="left"
+                        android:layout_weight="1"
+                        android:text="Item Name"
+                        android:textSize="15sp" />
+
+                    <TextView
+                        android:id="@+id/itemName"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="right"
+                        android:layout_weight="1"
+                        android:text="N/A"
+                        android:textSize="15sp" />
+
+                </LinearLayout>
+
+                <View style="@style/ViewSeparator" />
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="left"
+                        android:layout_weight="1"
+                        android:text="Price"
+                        android:textSize="15sp" />
+
+                    <TextView
+                        android:id="@+id/price"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="right"
+                        android:layout_weight="1"
+                        android:text="N/A"
+                        android:textSize="18sp" />
+
+                </LinearLayout>
+
+                <View style="@style/ViewSeparator" />
 
             </LinearLayout>
-
-            <View
-                style="@style/ViewSeparator" />
-
-            <LinearLayout
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="left"
-                    android:layout_weight="1"
-                    android:text="Category Name"
-                    android:textSize="15sp" />
-
-                <TextView
-                    android:id="@+id/categoryName"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="right"
-                    android:layout_weight="1"
-                    android:text="N/A"
-                    android:textSize="15sp" />
-
-            </LinearLayout>
-
-            <View
-                style="@style/ViewSeparator" />
-
-            <LinearLayout
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="left"
-                    android:layout_weight="1"
-                    android:text="Page No"
-                    android:textSize="15sp" />
-
-                <TextView
-                    android:id="@+id/pageNo"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="right"
-                    android:layout_weight="1"
-                    android:text="N/A"
-                    android:textSize="15sp" />
-
-            </LinearLayout>
-
-            <View
-                style="@style/ViewSeparator" />
-
-            <LinearLayout
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="left"
-                    android:layout_weight="1"
-                    android:text="Item No"
-                    android:textSize="15sp" />
-
-                <TextView
-                    android:id="@+id/itemNo"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="right"
-                    android:layout_weight="1"
-                    android:text="N/A"
-                    android:textSize="15sp" />
-
-            </LinearLayout>
-
-            <View
-                style="@style/ViewSeparator" />
-
-            <LinearLayout
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="left"
-                    android:layout_weight="1"
-                    android:text="Foreign ID"
-                    android:textSize="15sp" />
-
-                <TextView
-                    android:id="@+id/foreignID"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="right"
-                    android:layout_weight="1"
-                    android:text="N/A"
-                    android:textSize="15sp" />
-
-            </LinearLayout>
-
-            <View
-                style="@style/ViewSeparator" />
-
-            <LinearLayout
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="left"
-                    android:layout_weight="1"
-                    android:text="Item Name"
-                    android:textSize="15sp" />
-
-                <TextView
-                    android:id="@+id/itemName"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="right"
-                    android:layout_weight="1"
-                    android:text="N/A"
-                    android:textSize="15sp" />
-
-            </LinearLayout>
-
-            <View
-                style="@style/ViewSeparator" />
-
-            <LinearLayout
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="left"
-                    android:layout_weight="1"
-                    android:text="Price"
-                    android:textSize="15sp" />
-
-                <TextView
-                    android:id="@+id/price"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="right"
-                    android:layout_weight="1"
-                    android:text="N/A"
-                    android:textSize="18sp" />
-
-            </LinearLayout>
-
-            <View
-                style="@style/ViewSeparator" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
                 android:paddingTop="20dp"
-                android:text="Copyright © 2022 FarmGear (Private) Limited"
-                android:layout_gravity="center"/>
+                android:paddingBottom="20dp"
+                android:text="Copyright © 2022 FarmGear (Private) Limited" />
 
         </LinearLayout>
 

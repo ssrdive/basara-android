@@ -17,6 +17,14 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
+            android:name=".activities.InvoiceActivity"
+            android:screenOrientation="portrait"
+            android:exported="false" />
+        <activity
+            android:name=".activities.ViewWarehouseStockActivity"
+            android:screenOrientation="portrait"
+            android:exported="false" />
+        <activity
             android:name=".activities.PendingTransferDetailsActivity"
             android:exported="false"
             android:screenOrientation="portrait" />

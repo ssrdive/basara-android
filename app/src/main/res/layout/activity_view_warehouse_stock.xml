@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.PendingTransfersActivity"
     android:orientation="vertical"
+    tools:context=".activities.ViewWarehouseStockActivity"
     android:padding="8dp">
 
     <TextView
@@ -13,13 +13,7 @@
         android:layout_height="wrap_content"
         android:textAlignment="center"
         android:textSize="18dp"
-        android:text="Pending Transfers"
-        android:paddingBottom="10dp" />
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/accessLevelTV"
+        android:text="Warehouse Stock"
         android:paddingBottom="10dp" />
 
     <RelativeLayout
@@ -40,7 +34,7 @@
                     android:layout_height="wrap_content">
 
                     <TableLayout
-                        android:id="@+id/pendingTransfers_TL"
+                        android:id="@+id/warehouseStockTL"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:paddingBottom="20dp">
@@ -55,25 +49,25 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginRight="15dp"
-                                android:text="ID" />
+                                android:text="Warehouse Name" />
 
                             <TextView
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginRight="15dp"
-                                android:text="Created" />
+                                android:text="Item Name" />
 
                             <TextView
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginRight="15dp"
-                                android:text="From" />
+                                android:text="Quantity" />
 
                             <TextView
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginRight="15dp"
-                                android:text="To" />
+                                android:text="Unit Price" />
 
                         </TableRow>
 
