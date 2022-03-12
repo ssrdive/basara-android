@@ -1,15 +1,18 @@
 package app.farmgear.android.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AlertDialog;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -39,6 +42,7 @@ import java.util.Map;
 
 import app.farmgear.android.R;
 import app.farmgear.android.api.API;
+import app.farmgear.android.threads.IssueInvoiceThread;
 import app.farmgear.android.utils.NumberFormatter;
 import app.farmgear.android.utils.Utils;
 
@@ -53,8 +57,11 @@ public class InvoiceActivity extends AppCompatActivity implements View.OnClickLi
     private Button addBtn;
     private EditText numberET;
     private EditText discountET;
+    private EditText customerNameET;
     private TextView invoicingLocationTV;
     private Button issueInvoiceBtn;
+
+    AlertDialog issueInvoiceStatus;
 
     Context context;
 
@@ -78,6 +85,7 @@ public class InvoiceActivity extends AppCompatActivity implements View.OnClickLi
         itemIDET = findViewById(R.id.itemIDET);
         addBtn = findViewById(R.id.addBtn);
         numberET = findViewById(R.id.numberET);
+        customerNameET = findViewById(R.id.customerNameET);
         discountET = findViewById(R.id.discountET);
         invoicingLocationTV = findViewById(R.id.invoicingLocationTV);
         issueInvoiceBtn = findViewById(R.id.issueInvoiceBtn);
@@ -88,7 +96,7 @@ public class InvoiceActivity extends AppCompatActivity implements View.OnClickLi
         userDetails = getApplication().getSharedPreferences("user_details", getApplicationContext().MODE_PRIVATE);
         utils = new Utils();
 
-        context = getApplicationContext();
+        context = InvoiceActivity.this;
 
         scanItemBtn.setOnClickListener(this);
         addBtn.setOnClickListener(this);
@@ -102,7 +110,7 @@ public class InvoiceActivity extends AppCompatActivity implements View.OnClickLi
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                updateInvoicePrice(getInvoicePrice());
+                updateInvoicePrice(getInvoicePrice()[0]);
             }
 
             @Override
@@ -114,6 +122,22 @@ public class InvoiceActivity extends AppCompatActivity implements View.OnClickLi
         invoiceItems = new ArrayList<>();
 
         setInvoicingLocation();
+    }
+
+    private void showMessage(final String type, final String title, final String message) {
+        issueInvoiceDialog.dismiss();
+        issueInvoiceStatus = new AlertDialog.Builder(context).create();
+        issueInvoiceStatus.setTitle(title);
+        issueInvoiceStatus.setMessage(message);
+        issueInvoiceStatus.setIcon(context.getResources().getDrawable(type.equals("success") ? R.drawable.success_icon : R.drawable.failure_icon));
+        issueInvoiceStatus.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+        issueInvoiceStatus.show();
     }
 
     private void setInvoicingLocation() {
@@ -130,7 +154,45 @@ public class InvoiceActivity extends AppCompatActivity implements View.OnClickLi
                 addInvoiceItem(itemIDET.getText().toString().toUpperCase());
                 break;
             case R.id.issueInvoiceBtn:
-                issueInvoice();
+                issueInvoiceDialog = new ProgressDialog(InvoiceActivity.this);
+                issueInvoiceDialog.setTitle("Issuing Invoice");
+                issueInvoiceDialog.setMessage("Please wait while the invoice is being issued");
+                issueInvoiceDialog.setCancelable(false);
+                issueInvoiceDialog.show();
+
+                if (invoiceItemsTL.getChildCount() == 1) {
+                    showMessage("failure", "Validation failure", "No items in invoice");
+                    return;
+                }
+                if (numberET.getText().toString().length() != 9) {
+                    showMessage("failure", "Validation failure", "Invalid contact number");
+                    return;
+                }
+                if (customerNameET.getText().toString().length() == 0) {
+                    showMessage("failure", "Validation failure", "Invalid customer name");
+                    return;
+                }
+                if(!utils.isInternetAvailable(context)) {
+                    showMessage("failure", "Connectivity issue", "Unable to communicate with the system. Make sure you are connected to the internet");
+                    return;
+                }
+
+                final JSONArray invoiceItems = getInvoiceItems();
+                if (invoiceItems == null) {
+                    return;
+                }
+
+                HashMap<String, String> invoiceDetails = new HashMap<String, String>();
+                invoiceDetails.put("issuer", userDetails.getString("name", ""));
+                float prices[] = getInvoicePrice();
+                invoiceDetails.put("price_after_discount", String.valueOf(prices[0]));
+                invoiceDetails.put("customer_no", numberET.getText().toString());
+                invoiceDetails.put("customer_name", customerNameET.getText().toString());
+                invoiceDetails.put("discount", String.valueOf(prices[1]));
+                invoiceDetails.put("price_before_discount", String.valueOf(prices[2]));
+                invoiceDetails.put("items", invoiceItems.toString());
+
+                IssueInvoiceThread issueInvoiceThread = new IssueInvoiceThread(context, issueInvoiceDialog, invoiceItemsTL, invoiceDetails);
                 break;
         }
     }
@@ -159,7 +221,7 @@ public class InvoiceActivity extends AppCompatActivity implements View.OnClickLi
                     quantity = Integer.parseInt(quantityTV.getText().toString());
 
                 if (quantity == 0) {
-                    Toast.makeText(context, "Empty items in invoice. Please double check", Toast.LENGTH_SHORT).show();
+                    showMessage("failure", "Validation failure", "Empty items in invoice. Please double check");
                     return null;
                 }
 
@@ -173,72 +235,6 @@ public class InvoiceActivity extends AppCompatActivity implements View.OnClickLi
         }
 
         return invoiceArray;
-    }
-
-    private void issueInvoice() {
-        if (invoiceItemsTL.getChildCount() == 1) {
-            Toast.makeText(context, "No items in invoice", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        if (numberET.getText().toString().length() != 9) {
-            Toast.makeText(context, "Invalid contact number", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        final JSONArray invoiceItems = getInvoiceItems();
-        if (invoiceItems == null) {
-            return;
-        }
-
-        if(utils.isInternetAvailable(context)) {
-            issueInvoiceDialog = new ProgressDialog(InvoiceActivity.this);
-            issueInvoiceDialog.setTitle("Issuing Invoice");
-            issueInvoiceDialog.setMessage("Please wait while the invoice is being issued");
-            issueInvoiceDialog.setCancelable(false);
-            issueInvoiceDialog.show();
-            String url =  new API().getApiLink() + "/transaction/invoice";
-            StringRequest request = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
-                @Override
-                public void onResponse(String response) {
-                    issueInvoiceDialog.dismiss();
-                    Toast.makeText(context, "SUCCESS: Invoice issued", Toast.LENGTH_LONG).show();
-                }
-            }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    issueInvoiceDialog.dismiss();
-                    Toast.makeText(context, "Failed: Failed to issue invoice", Toast.LENGTH_LONG).show();
-                    error.printStackTrace();
-                }
-            }) {
-                @Override
-                protected Map<String, String> getParams() {
-                    int discount = 0;
-                    if (discountET.getText().toString().length() != 0)
-                        discount = Integer.parseInt(discountET.getText().toString());
-
-                    Map<String, String> params = new HashMap<String, String>();
-                    params.put("user_id", userDetails.getString("id", ""));
-                    params.put("from_warehouse", userDetails.getString("warehouse_id", ""));
-                    params.put("customer_contact", numberET.getText().toString());
-                    params.put("discount", String.valueOf(discount));
-                    params.put("items", invoiceItems.toString());
-
-                    return params;
-                }
-
-                @Override
-                public Map<String, String> getHeaders() throws AuthFailureError {
-                    Map<String, String> params = new HashMap<String, String>();
-                    params.put("Authorization", "Bearer " + userDetails.getString("token", ""));
-                    params.put("Content-Type", "application/x-www-form-urlencoded");
-                    return params;
-                }
-            };
-
-            mQueue.add(request);
-        }
     }
 
     private void scanCode() {
@@ -281,7 +277,7 @@ public class InvoiceActivity extends AppCompatActivity implements View.OnClickLi
                             invoiceItemsTL.removeView(invoiceItem);
                             invoiceItem.removeAllViews();
                             invoiceItems.remove(itemID);
-                            updateInvoicePrice(getInvoicePrice());
+                            updateInvoicePrice(getInvoicePrice()[0]);
                         }
                     });
 
@@ -328,7 +324,7 @@ public class InvoiceActivity extends AppCompatActivity implements View.OnClickLi
                             } else {
                                 price.setText("0");
                             }
-                            updateInvoicePrice(getInvoicePrice());
+                            updateInvoicePrice(getInvoicePrice()[0]);
                         }
 
                         @Override
@@ -372,23 +368,25 @@ public class InvoiceActivity extends AppCompatActivity implements View.OnClickLi
         mQueue.add(request);
     }
 
-    private float getInvoicePrice() {
-        float invoicePrice = 0;
-        float invoiceDiscount = 0;
+    private float[] getInvoicePrice() {
+        float[] prices = {0, 0, 0};
+        prices[0] = 0;
+        prices[1] = 0;
         if (discountET.getText().toString().length() != 0)
-            invoiceDiscount = Float.parseFloat(discountET.getText().toString());
+            prices[1] = Float.parseFloat(discountET.getText().toString());
 
         for (int i = 1; i < invoiceItemsTL.getChildCount(); i++) {
             TableRow tableRow = (TableRow) invoiceItemsTL.getChildAt(i);
             TextView rowPrice = (TextView) tableRow.getChildAt(4);
 
-            invoicePrice += Float.parseFloat(rowPrice.getText().toString().replaceAll("[^\\d.]", ""));
+            prices[0] += Float.parseFloat(rowPrice.getText().toString().replaceAll("[^\\d.]", ""));
         }
 
-        if (invoiceDiscount != 0)
-            invoicePrice = invoicePrice * (100 - invoiceDiscount) / 100;
+        prices[2] = prices[0];
+        if (prices[1] != 0)
+            prices[0] = prices[0] * (100 - prices[1]) / 100;
 
-        return invoicePrice;
+        return prices;
     }
 
     private void updateInvoicePrice(float price) {

@@ -57,6 +57,7 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
     TextView userFullName;
     TextView warehouseName;
     TextView accessType;
+    TextView cashInHandTV;
 
     private RequestQueue mQueue;
     private SharedPreferences userDetails;
@@ -102,6 +103,47 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
         invoiceBtn.setOnClickListener(this);
 
         setUserInfo();
+        setCashInHand();
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        setCashInHand();
+    }
+
+    private void setCashInHand() {
+        cashInHandTV = findViewById(R.id.cashInHandTV);
+
+        if(utils.isInternetAvailable(getApplicationContext())) {
+            String url = new API().getApiLink() + "/account/cashinhand/" + userDetails.getString("id", "");
+            StringRequest request = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+                    try {
+                        JSONObject incentive = new JSONObject(response);
+                        cashInHandTV.setText("Rs. " + new NumberFormatter().format(incentive.getString("amount")));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    cashInHandTV.setText("<Error>");
+                }
+            }) {
+                @Override
+                public Map<String, String> getHeaders() throws AuthFailureError {
+                    Map<String, String> params = new HashMap<String, String>();
+                    params.put("Authorization", "Bearer " + userDetails.getString("token", ""));
+                    params.put("Content-Type", "application/x-www-form-urlencoded");
+                    return params;
+                }
+            };
+            request.setRetryPolicy(new DefaultRetryPolicy(10000, 0, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+            mQueue.add(request);
+        }
     }
 
     private void setUserInfo() {

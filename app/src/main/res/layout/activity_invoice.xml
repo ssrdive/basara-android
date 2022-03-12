@@ -117,12 +117,12 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
-                        android:layout_weight="1">
+                        android:layout_weight="2">
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Customer Contact" />
+                            android:text="Customer No" />
 
                         <EditText
                             android:layout_width="wrap_content"
@@ -130,6 +130,25 @@
                             android:hint="777777777"
                             android:inputType="number"
                             android:id="@+id/numberET" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_weight="8">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Customer Name" />
+
+                        <EditText
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:hint="John Doe"
+                            android:id="@+id/customerNameET" />
 
                     </LinearLayout>
 
