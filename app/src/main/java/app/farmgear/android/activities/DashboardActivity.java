@@ -6,6 +6,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -58,6 +59,7 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
     TextView warehouseName;
     TextView accessType;
     TextView cashInHandTV;
+    TextView salesCommissionTV;
 
     private RequestQueue mQueue;
     private SharedPreferences userDetails;
@@ -96,6 +98,9 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
         warehouseName = findViewById(R.id.warehouseName);
         accessType = findViewById(R.id.accessType);
 
+        cashInHandTV = findViewById(R.id.cashInHandTV);
+        salesCommissionTV = findViewById(R.id.salesCommissionTV);
+
         scanItemBtn.setOnClickListener(this);
         signOutBtn.setOnClickListener(this);
         searchBtn.setOnClickListener(this);
@@ -104,17 +109,50 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
 
         setUserInfo();
         setCashInHand();
+        setSalesCommission();
     }
 
     @Override
     protected void onRestart() {
         super.onRestart();
         setCashInHand();
+        setSalesCommission();
+    }
+
+    private void setSalesCommission() {
+        if(utils.isInternetAvailable(getApplicationContext())) {
+            String url = new API().getApiLink() + "/account/commission/" + userDetails.getString("id", "");
+            StringRequest request = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+                    try {
+                        Log.d("RESPONSE_COMM", response);
+                        JSONObject incentive = new JSONObject(response);
+                        salesCommissionTV.setText("Rs. " + new NumberFormatter().format(incentive.getString("amount")));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    salesCommissionTV.setText("<Error>");
+                }
+            }) {
+                @Override
+                public Map<String, String> getHeaders() throws AuthFailureError {
+                    Map<String, String> params = new HashMap<String, String>();
+                    params.put("Authorization", "Bearer " + userDetails.getString("token", ""));
+                    params.put("Content-Type", "application/x-www-form-urlencoded");
+                    return params;
+                }
+            };
+            request.setRetryPolicy(new DefaultRetryPolicy(10000, 0, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+            mQueue.add(request);
+        }
     }
 
     private void setCashInHand() {
-        cashInHandTV = findViewById(R.id.cashInHandTV);
-
         if(utils.isInternetAvailable(getApplicationContext())) {
             String url = new API().getApiLink() + "/account/cashinhand/" + userDetails.getString("id", "");
             StringRequest request = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
