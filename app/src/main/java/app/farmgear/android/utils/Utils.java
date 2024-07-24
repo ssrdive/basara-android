@@ -4,7 +4,9 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 
 public class Utils {
 
@@ -41,5 +43,10 @@ public class Utils {
         return calendar.get(Calendar.YEAR);
     }
 
+    static public String generateRequestID(String id) {
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmss");
+        Date date = new Date();
+        return (formatter.format(date) + id);
+    }
 
 }

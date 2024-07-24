@@ -195,6 +195,7 @@ public class PendingTransferDetailsActivity extends AppCompatActivity implements
                     params.put("user_id", userDetails.getString("id", ""));
                     params.put("resolution", action);
                     params.put("resolution_remarks", remarksET.getText().toString());
+                    params.put("request_id", Utils.generateRequestID(intent.getStringExtra("id")));
                     return params;
                 }
 

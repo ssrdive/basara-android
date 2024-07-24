@@ -275,6 +275,7 @@ public class IssueInvoiceThread implements Runnable {
                             params.put("customer_name", invoiceDetails.get("customer_name"));
                             params.put("discount", invoiceDetails.get("discount"));
                             params.put("items", invoiceDetails.get("items"));
+                            params.put("request_id", Utils.generateRequestID(invoiceDetails.get("customer_no")+"A"));
 
                             return params;
                         }
@@ -312,6 +313,7 @@ public class IssueInvoiceThread implements Runnable {
                     params.put("customer_name", invoiceDetails.get("customer_name"));
                     params.put("discount", invoiceDetails.get("discount"));
                     params.put("items", invoiceDetails.get("items"));
+                    params.put("request_id", Utils.generateRequestID(invoiceDetails.get("customer_no")+"P"));
 
                     return params;
                 }
