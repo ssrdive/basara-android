@@ -159,6 +159,7 @@ public class IssueInvoiceThread implements Runnable {
         if (utils.isInternetAvailable(context)) {
             mQueue = Volley.newRequestQueue(context);
             final String url =  new API().getApiLink() + "/transaction/invoice";
+            final String requestID = Utils.generateRequestID(invoiceDetails.get("customer_no"));
             StringRequest planRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
@@ -275,7 +276,7 @@ public class IssueInvoiceThread implements Runnable {
                             params.put("customer_name", invoiceDetails.get("customer_name"));
                             params.put("discount", invoiceDetails.get("discount"));
                             params.put("items", invoiceDetails.get("items"));
-                            params.put("request_id", Utils.generateRequestID(invoiceDetails.get("customer_no")+"A"));
+                            params.put("request_id", requestID+"A");
 
                             return params;
                         }
@@ -313,7 +314,7 @@ public class IssueInvoiceThread implements Runnable {
                     params.put("customer_name", invoiceDetails.get("customer_name"));
                     params.put("discount", invoiceDetails.get("discount"));
                     params.put("items", invoiceDetails.get("items"));
-                    params.put("request_id", Utils.generateRequestID(invoiceDetails.get("customer_no")+"P"));
+                    params.put("request_id", requestID+"P");
 
                     return params;
                 }
