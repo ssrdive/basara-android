@@ -9,6 +9,7 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Handler;
+import android.util.Log;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -17,6 +18,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AlertDialog;
 
 import com.android.volley.AuthFailureError;
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -106,7 +108,9 @@ public class IssueInvoiceThread implements Runnable {
             }
         }
 
-        if (!paired) {
+        final String env = new API().getEnvironment();
+
+        if (env.equals("prod") && !paired) {
             showMessage(
                     "failure",
                     "Printer not paired",
@@ -129,13 +133,15 @@ public class IssueInvoiceThread implements Runnable {
                 bxlConfigLoader.removeEntry(jposEntry.getLogicalName());
             }
         } catch (Exception e) {
-            e.printStackTrace();
-            showMessage(
-                    "failure",
-                    "Something went wrong",
-                "Please contact system administrator"
-            );
-            return;
+            if (env.equals("prod")) {
+                e.printStackTrace();
+                showMessage(
+                        "failure",
+                        "Something went wrong",
+                        "Please contact system administrator"
+                );
+                return;
+            }
         }
 
         try {
@@ -146,13 +152,15 @@ public class IssueInvoiceThread implements Runnable {
                     MAC);
             bxlConfigLoader.saveFile();
         } catch (Exception e) {
-            e.printStackTrace();
-            showMessage(
-                    "failure",
-                    "Something went wrong",
-                    "Please contact system administrator"
-            );
-            return;
+            if (env.equals("prod")) {
+                e.printStackTrace();
+                showMessage(
+                        "failure",
+                        "Something went wrong",
+                        "Please contact system administrator"
+                );
+                return;
+            }
         }
 
         userDetails = context.getSharedPreferences("user_details", context.MODE_PRIVATE);
@@ -164,74 +172,76 @@ public class IssueInvoiceThread implements Runnable {
                 @Override
                 public void onResponse(String response) {
                     try {
-                        POSPrinter posPrinter = new POSPrinter(context);
-                        posPrinter.open(BXLConfigLoader.PRODUCT_NAME_SPP_R310);
-                        posPrinter.claim(5000);
-                        posPrinter.setDeviceEnabled(true);
-                        posPrinter.checkHealth(JposConst.JPOS_CH_INTERNAL);
-                        ByteBuffer buffer = ByteBuffer.allocate(4);
-                        buffer.put((byte) POSPrinterConst.PTR_S_RECEIPT);
-                        buffer.put((byte) 80);
-                        buffer.put((byte) 0x01);
-                        buffer.put((byte) 0x00);
-                        Bitmap logo = BitmapFactory.decodeResource(context.getResources(), R.drawable.logo_print);
+                        if (env.equals("prod")) {
+                            POSPrinter posPrinter = new POSPrinter(context);
+                            posPrinter.open(BXLConfigLoader.PRODUCT_NAME_SPP_R310);
+                            posPrinter.claim(5000);
+                            posPrinter.setDeviceEnabled(true);
+                            posPrinter.checkHealth(JposConst.JPOS_CH_INTERNAL);
+                            ByteBuffer buffer = ByteBuffer.allocate(4);
+                            buffer.put((byte) POSPrinterConst.PTR_S_RECEIPT);
+                            buffer.put((byte) 80);
+                            buffer.put((byte) 0x01);
+                            buffer.put((byte) 0x00);
+                            Bitmap logo = BitmapFactory.decodeResource(context.getResources(), R.drawable.logo_print);
 
-                        String address = "\nFarmGear (Private) Limited\n" +
-                                "No 67/A, Sirisangabo Place, Polonnaruwa\n " +
-                                "027 222 7788\n";
+                            String address = "\nFarmGear (Private) Limited\n" +
+                                    "No 67/A, Sirisangabo Place, Polonnaruwa\n " +
+                                    "027 222 7788\n";
 
-                        posPrinter.printBitmap(buffer.getInt(0), logo, 300, POSPrinterConst.PTR_BM_CENTER);
-                        String ESCAPE_CHARACTERS = new String(new byte[]{0x1b, 0x7c});
-                        posPrinter.printNormal(POSPrinterConst.PTR_S_RECEIPT, ESCAPE_CHARACTERS + "N" + ESCAPE_CHARACTERS + "cA" + address);
-                        posPrinter.printNormal(POSPrinterConst.PTR_S_RECEIPT, ESCAPE_CHARACTERS + "lA" + ESCAPE_CHARACTERS + "N"
-                                + "________________________________________________\n\n");
-                        posPrinter.printNormal(POSPrinterConst.PTR_S_RECEIPT, ESCAPE_CHARACTERS + "bC" + ESCAPE_CHARACTERS + "cA" + "CASH INVOICE" + "\n\n");
-                        posPrinter.printNormal(POSPrinterConst.PTR_S_RECEIPT, ESCAPE_CHARACTERS + "lA" + ESCAPE_CHARACTERS + "N"
-                                + "Date  : " + java.text.DateFormat.getDateTimeInstance().format(new Date()) + "\n");
-                        posPrinter.printNormal(POSPrinterConst.PTR_S_RECEIPT, ESCAPE_CHARACTERS + "lA" + ESCAPE_CHARACTERS + "N"
-                                + "Issuer: " + invoiceDetails.get("issuer") + "\n\n");
-
-                        posPrinter.printNormal(POSPrinterConst.PTR_S_RECEIPT, ESCAPE_CHARACTERS + "lA" + ESCAPE_CHARACTERS + "N"
-                                + "Customer : " + invoiceDetails.get("customer_name") + "\n");
-                        posPrinter.printNormal(POSPrinterConst.PTR_S_RECEIPT, ESCAPE_CHARACTERS + "lA" + ESCAPE_CHARACTERS + "N"
-                                + "Contact  : " + invoiceDetails.get("customer_no") + "\n\n");
-
-                        for(int i = 1; i < invoiceItemsTL.getChildCount(); i++) {
-                            TableRow invoiceRow = (TableRow) invoiceItemsTL.getChildAt(i);
-
-                            TextView itemIDTV = (TextView) invoiceRow.getChildAt(1);
-                            TextView unitPriceTV = (TextView) invoiceRow.getChildAt(2);
-                            TextView quantityTV = (TextView) invoiceRow.getChildAt(3);
-                            TextView priceTV = (TextView) invoiceRow.getChildAt(4);
-                            TextView itemName = (TextView) invoiceRow.getChildAt(5);
+                            posPrinter.printBitmap(buffer.getInt(0), logo, 300, POSPrinterConst.PTR_BM_CENTER);
+                            String ESCAPE_CHARACTERS = new String(new byte[]{0x1b, 0x7c});
+                            posPrinter.printNormal(POSPrinterConst.PTR_S_RECEIPT, ESCAPE_CHARACTERS + "N" + ESCAPE_CHARACTERS + "cA" + address);
+                            posPrinter.printNormal(POSPrinterConst.PTR_S_RECEIPT, ESCAPE_CHARACTERS + "lA" + ESCAPE_CHARACTERS + "N"
+                                    + "________________________________________________\n\n");
+                            posPrinter.printNormal(POSPrinterConst.PTR_S_RECEIPT, ESCAPE_CHARACTERS + "bC" + ESCAPE_CHARACTERS + "cA" + "CASH INVOICE" + "\n\n");
+                            posPrinter.printNormal(POSPrinterConst.PTR_S_RECEIPT, ESCAPE_CHARACTERS + "lA" + ESCAPE_CHARACTERS + "N"
+                                    + "Date  : " + java.text.DateFormat.getDateTimeInstance().format(new Date()) + "\n");
+                            posPrinter.printNormal(POSPrinterConst.PTR_S_RECEIPT, ESCAPE_CHARACTERS + "lA" + ESCAPE_CHARACTERS + "N"
+                                    + "Issuer: " + invoiceDetails.get("issuer") + "\n\n");
 
                             posPrinter.printNormal(POSPrinterConst.PTR_S_RECEIPT, ESCAPE_CHARACTERS + "lA" + ESCAPE_CHARACTERS + "N"
-                                    + itemIDTV.getText().toString() +  "\n");
+                                    + "Customer : " + invoiceDetails.get("customer_name") + "\n");
                             posPrinter.printNormal(POSPrinterConst.PTR_S_RECEIPT, ESCAPE_CHARACTERS + "lA" + ESCAPE_CHARACTERS + "N"
-                                    + itemName.getText().toString() + "\n");
+                                    + "Contact  : " + invoiceDetails.get("customer_no") + "\n\n");
+
+                            for(int i = 1; i < invoiceItemsTL.getChildCount(); i++) {
+                                TableRow invoiceRow = (TableRow) invoiceItemsTL.getChildAt(i);
+
+                                TextView itemIDTV = (TextView) invoiceRow.getChildAt(1);
+                                TextView unitPriceTV = (TextView) invoiceRow.getChildAt(2);
+                                TextView quantityTV = (TextView) invoiceRow.getChildAt(3);
+                                TextView priceTV = (TextView) invoiceRow.getChildAt(4);
+                                TextView itemName = (TextView) invoiceRow.getChildAt(5);
+
+                                posPrinter.printNormal(POSPrinterConst.PTR_S_RECEIPT, ESCAPE_CHARACTERS + "lA" + ESCAPE_CHARACTERS + "N"
+                                        + itemIDTV.getText().toString() +  "\n");
+                                posPrinter.printNormal(POSPrinterConst.PTR_S_RECEIPT, ESCAPE_CHARACTERS + "lA" + ESCAPE_CHARACTERS + "N"
+                                        + itemName.getText().toString() + "\n");
+                                posPrinter.printNormal(POSPrinterConst.PTR_S_RECEIPT, ESCAPE_CHARACTERS + "lA" + ESCAPE_CHARACTERS + "N"
+                                        + unitPriceTV.getText().toString() + "\tX\t"
+                                        + quantityTV.getText().toString() + "\t"
+                                        + priceTV.getText().toString() + "\n\n");
+                            }
+
+                            NumberFormatter numberFormatter = new NumberFormatter();
                             posPrinter.printNormal(POSPrinterConst.PTR_S_RECEIPT, ESCAPE_CHARACTERS + "lA" + ESCAPE_CHARACTERS + "N"
-                                    + unitPriceTV.getText().toString() + "\tX\t"
-                                    + quantityTV.getText().toString() + "\t"
-                                    + priceTV.getText().toString() + "\n\n");
+                                    + "Price    : " + numberFormatter.format(invoiceDetails.get("price_before_discount")) + "\n");
+                            posPrinter.printNormal(POSPrinterConst.PTR_S_RECEIPT, ESCAPE_CHARACTERS + "lA" + ESCAPE_CHARACTERS + "N"
+                                    + "Discount : " + (int) Double.parseDouble(invoiceDetails.get("discount")) + " %" + "\n\n");
+                            posPrinter.printNormal(POSPrinterConst.PTR_S_RECEIPT, ESCAPE_CHARACTERS + "4C" + ESCAPE_CHARACTERS
+                                    + "cA" + "RS " + numberFormatter.format(invoiceDetails.get("price_after_discount")) + "\n\n");
+                            posPrinter.printNormal(POSPrinterConst.PTR_S_RECEIPT, ESCAPE_CHARACTERS + "N" + ESCAPE_CHARACTERS + "cA"
+                                    + "We thank you for your purchase!\n\n");
+
+                            ByteBuffer buffer2 = ByteBuffer.allocate(4);
+                            buffer2.put((byte) POSPrinterConst.PTR_S_RECEIPT);
+                            buffer2.put((byte) 20);
+                            buffer2.put((byte) 0x01);
+                            buffer2.put((byte) 0x00);
+                            posPrinter.printNormal(POSPrinterConst.PTR_S_RECEIPT, "\n\n\n");
+                            posPrinter.close();
                         }
-
-                        NumberFormatter numberFormatter = new NumberFormatter();
-                        posPrinter.printNormal(POSPrinterConst.PTR_S_RECEIPT, ESCAPE_CHARACTERS + "lA" + ESCAPE_CHARACTERS + "N"
-                                + "Price    : " + numberFormatter.format(invoiceDetails.get("price_before_discount")) + "\n");
-                        posPrinter.printNormal(POSPrinterConst.PTR_S_RECEIPT, ESCAPE_CHARACTERS + "lA" + ESCAPE_CHARACTERS + "N"
-                                + "Discount : " + (int) Double.parseDouble(invoiceDetails.get("discount")) + " %" + "\n\n");
-                        posPrinter.printNormal(POSPrinterConst.PTR_S_RECEIPT, ESCAPE_CHARACTERS + "4C" + ESCAPE_CHARACTERS
-                                + "cA" + "RS " + numberFormatter.format(invoiceDetails.get("price_after_discount")) + "\n\n");
-                        posPrinter.printNormal(POSPrinterConst.PTR_S_RECEIPT, ESCAPE_CHARACTERS + "N" + ESCAPE_CHARACTERS + "cA"
-                                + "We thank you for your purchase!\n\n");
-
-                        ByteBuffer buffer2 = ByteBuffer.allocate(4);
-                        buffer2.put((byte) POSPrinterConst.PTR_S_RECEIPT);
-                        buffer2.put((byte) 20);
-                        buffer2.put((byte) 0x01);
-                        buffer2.put((byte) 0x00);
-                        posPrinter.printNormal(POSPrinterConst.PTR_S_RECEIPT, "\n\n\n");
-                        posPrinter.close();
                     } catch (JposException e) {
                         e.printStackTrace();
                         showMessage(
@@ -289,7 +299,7 @@ public class IssueInvoiceThread implements Runnable {
                             return params;
                         }
                     };
-
+                    executeRequest.setRetryPolicy(new DefaultRetryPolicy(25000, 0, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
                     mQueue.add(executeRequest);
                 }
 
@@ -327,7 +337,7 @@ public class IssueInvoiceThread implements Runnable {
                     return params;
                 }
             };
-
+            planRequest.setRetryPolicy(new DefaultRetryPolicy(25000, 0, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
             mQueue.add(planRequest);
         }
     }

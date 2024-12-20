@@ -147,7 +147,7 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
                     return params;
                 }
             };
-            request.setRetryPolicy(new DefaultRetryPolicy(10000, 0, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+            request.setRetryPolicy(new DefaultRetryPolicy(25000, 0, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
             mQueue.add(request);
         }
     }
@@ -179,7 +179,7 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
                     return params;
                 }
             };
-            request.setRetryPolicy(new DefaultRetryPolicy(10000, 0, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+            request.setRetryPolicy(new DefaultRetryPolicy(25000, 0, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
             mQueue.add(request);
         }
     }
@@ -268,7 +268,7 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
                     return params;
                 }
             };
-            request.setRetryPolicy(new DefaultRetryPolicy(10000, 0, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+            request.setRetryPolicy(new DefaultRetryPolicy(25000, 0, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
             mQueue.add(request);
         } else {
             Toast.makeText(this, "You are offline", Toast.LENGTH_LONG).show();

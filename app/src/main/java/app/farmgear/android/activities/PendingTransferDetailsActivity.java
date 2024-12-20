@@ -151,7 +151,7 @@ public class PendingTransferDetailsActivity extends AppCompatActivity implements
                     return params;
                 }
             };
-
+            request.setRetryPolicy(new DefaultRetryPolicy(25000, 0, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
             mQueue.add(request);
         }
     }
@@ -198,7 +198,7 @@ public class PendingTransferDetailsActivity extends AppCompatActivity implements
                 public void onResponse(String response) {
                     sendInventoryTransferAction.dismiss();
                     Toast.makeText(context, "SUCCESS: Action processed", Toast.LENGTH_LONG).show();
-                    startActivity(new Intent(getApplicationContext(), PendingTransfersActivity.class));
+                    finish();
                 }
             }, new Response.ErrorListener() {
                 @Override
@@ -206,7 +206,7 @@ public class PendingTransferDetailsActivity extends AppCompatActivity implements
                     sendInventoryTransferAction.dismiss();
                     Toast.makeText(context, "Failed: Failed to process action", Toast.LENGTH_LONG).show();
                     error.printStackTrace();
-                    startActivity(new Intent(getApplicationContext(), PendingTransfersActivity.class));
+                    finish();
                 }
             }) {
                 @Override
@@ -228,7 +228,7 @@ public class PendingTransferDetailsActivity extends AppCompatActivity implements
                     return params;
                 }
             };
-            request.setRetryPolicy(new DefaultRetryPolicy(20000, 0, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+            request.setRetryPolicy(new DefaultRetryPolicy(25000, 0, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
             mQueue.add(request);
         }
     }

@@ -364,7 +364,7 @@ public class InvoiceActivity extends AppCompatActivity implements View.OnClickLi
                 return params;
             }
         };
-        request.setRetryPolicy(new DefaultRetryPolicy(10000, 0, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        request.setRetryPolicy(new DefaultRetryPolicy(25000, 0, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         mQueue.add(request);
     }
 
