@@ -1,12 +1,15 @@
 package app.farmgear.android.activities;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -16,6 +19,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -167,6 +171,21 @@ public class PendingTransferDetailsActivity extends AppCompatActivity implements
     }
 
     private void inventoryTransferAction(final String action) {
+        if (TextUtils.isEmpty(remarksET.getText().toString())) {
+            AlertDialog remarksMissingDialog = new AlertDialog.Builder(PendingTransferDetailsActivity.this).create();
+            remarksMissingDialog.setTitle("Missing Remarks");
+            remarksMissingDialog.setMessage("Please enter remarks to process action");
+            remarksMissingDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                    new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+            remarksMissingDialog.show();
+            return;
+        }
+
         if(utils.isInternetAvailable(context)) {
             sendInventoryTransferAction = new ProgressDialog(PendingTransferDetailsActivity.this);
             sendInventoryTransferAction.setTitle("Sending Action");
@@ -179,6 +198,7 @@ public class PendingTransferDetailsActivity extends AppCompatActivity implements
                 public void onResponse(String response) {
                     sendInventoryTransferAction.dismiss();
                     Toast.makeText(context, "SUCCESS: Action processed", Toast.LENGTH_LONG).show();
+                    startActivity(new Intent(getApplicationContext(), PendingTransfersActivity.class));
                 }
             }, new Response.ErrorListener() {
                 @Override
@@ -186,6 +206,7 @@ public class PendingTransferDetailsActivity extends AppCompatActivity implements
                     sendInventoryTransferAction.dismiss();
                     Toast.makeText(context, "Failed: Failed to process action", Toast.LENGTH_LONG).show();
                     error.printStackTrace();
+                    startActivity(new Intent(getApplicationContext(), PendingTransfersActivity.class));
                 }
             }) {
                 @Override
@@ -207,7 +228,7 @@ public class PendingTransferDetailsActivity extends AppCompatActivity implements
                     return params;
                 }
             };
-
+            request.setRetryPolicy(new DefaultRetryPolicy(20000, 0, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
             mQueue.add(request);
         }
     }
