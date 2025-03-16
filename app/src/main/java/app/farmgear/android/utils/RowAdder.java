@@ -27,6 +27,27 @@ public class RowAdder {
         this.context = context;
     }
 
+    public void itemStockLine(TableLayout table, final LinkedHashMap<String, String> pendingTransfer) {
+        TableRow contractRow = new TableRow(context);
+        contractRow.setBackgroundColor(Color.parseColor("#f2eded"));
+        contractRow.setPadding(5, 5, 5, 5);
+
+        Iterator contractIterator = pendingTransfer.entrySet().iterator();
+        while (contractIterator.hasNext()) {
+            Map.Entry contractColumn = (Map.Entry) contractIterator.next();
+            Button btn = new Button(context);
+
+            TextView textView = new TextView(context);
+            String columnValue = contractColumn.getValue().toString();
+
+            textView.setText(columnValue);
+            textView.setPadding(10, 10, 10, 10);
+            contractRow.addView(textView);
+        }
+
+        table.addView(contractRow);
+    }
+
     public void pendingTransfer(TableLayout table, final LinkedHashMap<String, String> pendingTransfer) {
         TableRow contractRow = new TableRow(context);
         contractRow.setBackgroundColor(Color.parseColor("#f2eded"));

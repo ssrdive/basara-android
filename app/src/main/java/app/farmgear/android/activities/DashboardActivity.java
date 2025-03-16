@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,15 +25,20 @@ import com.android.volley.toolbox.Volley;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import app.farmgear.android.R;
 import app.farmgear.android.api.API;
 import app.farmgear.android.utils.NumberFormatter;
+import app.farmgear.android.utils.RowAdder;
 import app.farmgear.android.utils.Utils;
 
 public class DashboardActivity extends AppCompatActivity implements View.OnClickListener {
@@ -61,11 +67,15 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
     TextView cashInHandTV;
     TextView salesCommissionTV;
 
+    JSONArray itemStock;
+    TableLayout stocksTable;
+
     private RequestQueue mQueue;
     private SharedPreferences userDetails;
     private Utils utils;
 
     private ProgressDialog loadItemDetailsDialog;
+    private ProgressDialog loadItemStockDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,6 +116,8 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
         searchBtn.setOnClickListener(this);
         pendingTransfersBtn.setOnClickListener(this);
         invoiceBtn.setOnClickListener(this);
+
+        stocksTable = findViewById(R.id.stocks_TL);
 
         setUserInfo();
         setCashInHand();
@@ -214,7 +226,7 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
         IntentIntegrator integrator = new IntentIntegrator(this);
         integrator.setCaptureActivity(CaptureAct.class);
         integrator.setOrientationLocked(false);
-        integrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE_TYPES);
+        integrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE);
         integrator.setPrompt("Scanning QR Code");
         integrator.initiateScan();
     }
@@ -236,6 +248,9 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
                     loadItemDetailsDialog.dismiss();
                     try {
                         JSONObject itemObj = new JSONObject(response);
+
+                        updateItemStock(itemObj.getString("id"));
+
                         NumberFormatter formatter = new NumberFormatter();
 
                         modelID.setText(itemObj.getString("model_id"));
@@ -256,6 +271,65 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
                 @Override
                 public void onErrorResponse(VolleyError error) {
                     loadItemDetailsDialog.dismiss();
+                    error.printStackTrace();
+                    Toast.makeText(getApplicationContext(), "Invalid Item ID", Toast.LENGTH_LONG).show();
+                }
+            }) {
+                @Override
+                public Map<String, String> getHeaders() throws AuthFailureError {
+                    Map<String, String> params = new HashMap<String, String>();
+                    params.put("Authorization", "Bearer " + userDetails.getString("token", ""));
+                    params.put("Content-Type", "application/x-www-form-urlencoded");
+                    return params;
+                }
+            };
+            request.setRetryPolicy(new DefaultRetryPolicy(25000, 0, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+            mQueue.add(request);
+        } else {
+            Toast.makeText(this, "You are offline", Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private void updateItemStock(final String itemID) {
+        this.itemID.setText(itemID);
+
+        if(utils.isInternetAvailable(this)) {
+            loadItemStockDialog = new ProgressDialog(DashboardActivity.this);
+            loadItemStockDialog.setTitle("Loading Item Stock");
+            loadItemStockDialog.setMessage("Please wait while item stocks are loaded");
+            loadItemStockDialog.setCancelable(false);
+            loadItemStockDialog.show();
+
+            String url = new API().getApiLink() + "/item/stock/" + itemID;
+            StringRequest request = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+                    Log.d("STOCK_RESPONSE", response);
+                    try {
+                        itemStock = new JSONArray(response);
+                        RowAdder rowAdder = new RowAdder(getApplicationContext());
+                        for (int i = 0; i < itemStock.length(); i++) {
+                            JSONObject receipt = itemStock.getJSONObject(i);
+                            Iterator<String> installmentIterator = receipt.keys();
+                            String tableExp[] = {};
+                            final LinkedHashMap<String, String> contractMap = new LinkedHashMap<String, String>();
+                            while (installmentIterator.hasNext()) {
+                                String key = installmentIterator.next();
+                                contractMap.put(key, receipt.getString(key));
+                            }
+                            rowAdder.itemStockLine(stocksTable, contractMap);
+                        }
+                        loadItemStockDialog.dismiss();
+                    } catch (JSONException e) {
+                        loadItemStockDialog.dismiss();
+                        e.printStackTrace();
+                        Log.d("ERROR", e.getLocalizedMessage());
+                    }
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    loadItemStockDialog.dismiss();
                     error.printStackTrace();
                     Toast.makeText(getApplicationContext(), "Invalid Item ID", Toast.LENGTH_LONG).show();
                 }

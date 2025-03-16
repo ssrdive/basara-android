@@ -504,7 +504,80 @@
 
                 <View style="@style/ViewSeparator" />
 
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                </LinearLayout>
+
             </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="10dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Item Stock"
+                    android:textSize="20dp" />
+
+            </LinearLayout>
+
+            <HorizontalScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="10dp">
+
+                <TableLayout
+                    android:id="@+id/stocks_TL"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingBottom="20dp">
+
+                    <TableRow
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="#ede6e6"
+                        android:padding="5dp">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="15dp"
+                            android:text="Warehouse" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="15dp"
+                            android:text="Item ID" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="15dp"
+                            android:text="Name" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="15dp"
+                            android:text="Qty" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="15dp"
+                            android:text="Float Qty" />
+
+                    </TableRow>
+
+                </TableLayout>
+
+            </HorizontalScrollView>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -512,7 +585,7 @@
                 android:layout_gravity="center"
                 android:paddingTop="20dp"
                 android:paddingBottom="20dp"
-                android:text="Copyright © 2022 FarmGear (Private) Limited" />
+                android:text="Copyright © 2025 FarmGear (Private) Limited" />
 
         </LinearLayout>
 

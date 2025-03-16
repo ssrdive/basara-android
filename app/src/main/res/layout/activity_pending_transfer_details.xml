@@ -227,7 +227,7 @@
                 android:layout_gravity="center"
                 android:paddingTop="20dp"
                 android:paddingBottom="20dp"
-                android:text="Copyright © 2022 FarmGear (Private) Limited" />
+                android:text="Copyright © 2025 FarmGear (Private) Limited" />
 
         </LinearLayout>
 

@@ -241,7 +241,7 @@ public class InvoiceActivity extends AppCompatActivity implements View.OnClickLi
         IntentIntegrator integrator = new IntentIntegrator(this);
         integrator.setCaptureActivity(CaptureAct.class);
         integrator.setOrientationLocked(false);
-        integrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE_TYPES);
+        integrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE);
         integrator.setPrompt("Scanning QR Code");
         integrator.initiateScan();
     }
